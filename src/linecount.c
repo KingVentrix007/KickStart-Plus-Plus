@@ -468,7 +468,7 @@ int get_line_count()
         extensions[i] = strdup(local_ext[i]);
     }
     traverse_directory(".");
-    if(system("clocc --version > /dev/null 2>&1") != 0)
+    if(system("cloc --version > /dev/null 2>&1") != 0)
     {
         printf("cloc is not installed, defaulting to builtin system\n");
         printf("Total lines of code: [%zu]\n",line_break_down_project.program_code);
