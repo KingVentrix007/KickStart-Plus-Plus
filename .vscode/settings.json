@@ -39,7 +39,13 @@
         "compile_windows.h": "c",
         "compile.h": "c",
         "types.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "optional": "c",
+        "system_error": "c",
+        "functional": "c",
+        "type_traits": "c",
+        "istream": "c",
+        "ostream": "c"
     },
     "pieces.cloudCapabilities": "Blended",
     "pieces.telemetry": true,

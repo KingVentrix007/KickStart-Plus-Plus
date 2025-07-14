@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #endif
 #include <unistd.h>
+#include "kpm_libs/kpm_fnmatch.h"
 #ifdef __linux__
 char **hnd_find_linux_internal(const char *dir_path, char **patterns, size_t pattern_count,
                                size_t *file_count, size_t *max_files,
@@ -107,7 +108,6 @@ char **hnd_find_linux_internal(const char *dir_path, char **patterns, size_t pat
                                size_t *file_count, size_t *max_files,
                                char ***file_list_ptr, int recursive)
 {
-    // printf("Opening dir\n");
     DIR *dp = opendir(dir_path);
     if (!dp) {
         perror("Couldn't open directory");
@@ -140,23 +140,25 @@ char **hnd_find_linux_internal(const char *dir_path, char **patterns, size_t pat
         if (pattern_count == 0) {
             matched = 1;
         } else {
-            for (size_t i = 0; i < pattern_count; i++) {
-                if (fnmatch(patterns[i], name, 0) == 0) {
-                    matched = 1;
-                    break;
-                }
+            // Custom match
+            char *test_names[1] = {(char *)name};
+            char **results = kpm_fnmatch(patterns, test_names, pattern_count, 1);
+            if (results != NULL) {
+                matched = 1;
+                // Free matches
+                for (size_t i = 0; results[i] != NULL; i++)
+                    free(results[i]);
+                free(results);
             }
         }
 
         if (!matched)
             continue;
 
-        // Get the current list
         char **file_list = *file_list_ptr;
 
         if (*file_count + 1 >= *max_files) {
             *max_files *= 2;
-            // printf("Call realoc\n");
             char **temp = realloc(file_list, (*max_files) * sizeof(char *));
             if (!temp) {
                 fprintf(stderr, "ERROR: realloc failed\n");
@@ -180,6 +182,7 @@ char **hnd_find_linux_internal(const char *dir_path, char **patterns, size_t pat
     closedir(dp);
     return *file_list_ptr;
 }
+
 #else
 char **hnd_find_linux_internal(const char *dir_path, char **patterns, size_t pattern_count,size_t *file_count, size_t *max_files,char ***file_list_ptr, int recursive)
 {
