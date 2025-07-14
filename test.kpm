@@ -2,4 +2,4 @@ echo hello world
 $PETE = find . kpm_test_file.c *.c
 echo compiling $PETE
 compile $PETE -Werror
-exit
+shell echo food

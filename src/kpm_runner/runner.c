@@ -17,6 +17,7 @@ int hnd_echo(char **argv, size_t argc);
 int hnd_env(char **argv, size_t argc);
 int hnd_wait(char **argv, size_t argc);
 char **hnd_find(char **argv,size_t argc);
+int hnd_shell(char **argv, size_t argc);
 int hnd_run();
 int hnd_build();
 char **extract_cmd_lines(char *path, size_t *line_count)
@@ -340,7 +341,7 @@ int execute(char **commands,size_t command_count_in)
             // Get the current OS platform
         }
         else if (strcmp(command_name, "shell") == 0) {
-            // Run a raw shell command
+            return hnd_shell(current_command,curr_cmd_size);
         }
         else if (strcmp(command_name, "set") == 0) {
             // Define a variable
